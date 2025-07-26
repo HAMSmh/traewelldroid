@@ -17,8 +17,8 @@ aboutLibraries {
 }
 
 android {
-    val packageName = "de.hbch.traewelling"
-    val name = "2.21.0"
+    val packageName = "de.ham.traewelling"
+    val name = "2.21.69"
     val code = 201
     compileSdk = 36
 
@@ -69,7 +69,7 @@ android {
             buildConfigField("String", "UNLEASH_KEY", "\"default:production.286fca3aac1497f85ed886b3339c65cdfea9d5f52450524325398461\"")
             buildConfigField("String", "WEBHOOK_URL", "\"https://webhook.traewelldroid.de\"")
             buildConfigField("String", "UP_FCM_PROXY", "\"https://push.traewelldroid.de/FCM\"")
-            buildConfigField("Boolean", "ENABLE_ACRA", "true")
+            buildConfigField("Boolean", "ENABLE_ACRA", "false")
             buildConfigField("String", "ACRA_ENDPOINT", "\"https://bugs.traewelldroid.de/report\"")
             buildConfigField("String", "ACRA_USERNAME", "\"59iEVqcvTqy1M9rr\"")
             buildConfigField("String", "ACRA_PASSWORD", "\"tA4VekBGnHuWQuGS\"")

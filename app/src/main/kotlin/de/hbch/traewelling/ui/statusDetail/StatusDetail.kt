@@ -184,9 +184,53 @@ fun StatusDetail(
                     }
                 }
                 val dStatus = status
+                val journeyIdTag = dStatus?.tags?.firstOrNull { it.key?.key == "trwl:journey_id" }
+                val journeyId = journeyIdTag?.value
                 val journeyNumber = dStatus?.journey?.manualJourneyNumber ?: dStatus?.journey?.journeyNumber
-                if (dStatus != null && journeyNumber != null) {
+                if (dStatus != null && journeyId != null) {
                     ButtonWithIconAndText(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.open_with_bahnexpert),
+                        drawableId = R.drawable.ic_train,
+                        onClick = {
+                            val intent = CustomTabsIntent.Builder()
+                                .setShowTitle(false)
+                                .build()
+
+                            val uri = Uri.Builder()
+                                .scheme("https")
+                                .authority("bahn.expert")
+                                .appendPath("details")
+                                .appendPath("0")
+                                .appendPath("j")
+                                .appendPath(journeyId)
+                                .build()
+
+                            intent.launchUrl(
+                                context,
+                                uri
+                            )
+                        }
+                    ),
+                    ButtonWithIconAndText(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.open_with_ris),
+                        drawableId = R.drawable.ic_train,
+                        onClick = {
+                            val intent = CustomTabsIntent.Builder()
+                                .setShowTitle(false)
+                                .build()
+
+                            val uri = "https://ris-info.bahn.de/#/train?fahrtId=$journeyId"
+
+                            intent.launchUrl(
+                                context,
+                                uri
+                            )
+                        }
+                    )
+                } else if (dStatus != null && journeyNumber != null) {
+                            ButtonWithIconAndText(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.open_with_bahnexpert),
                         drawableId = R.drawable.ic_train,
@@ -214,7 +258,6 @@ fun StatusDetail(
                                 context,
                                 uri
                             )
-
                         }
                     )
                 }
