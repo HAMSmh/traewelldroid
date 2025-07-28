@@ -31,6 +31,9 @@ class SettingsViewModel : ViewModel() {
     private val _useSystemFont = MutableLiveData(false)
     val useSystemFont: LiveData<Boolean> get() = _useSystemFont
 
+    private val _displayRisButton = MutableLiveData(false)
+    val displayRisButton: LiveData<Boolean> get() = _displayRisButton
+
     fun loadSettings(context: Context) {
         val secureStorage = SecureStorage(context)
 
@@ -45,6 +48,9 @@ class SettingsViewModel : ViewModel() {
         )
         _useSystemFont.postValue(
             secureStorage.getObject(SharedValues.SS_USE_SYSTEM_FONT, Boolean::class.java) ?: false
+        )
+        _displayRisButton.postValue(
+            secureStorage.getObject(SharedValues.SS_DISPLAY_RIS_BUTTON, Boolean::class.java) ?: false
         )
 
         val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -75,6 +81,11 @@ class SettingsViewModel : ViewModel() {
         val secureStorage = SecureStorage(context)
         secureStorage.storeObject(SharedValues.SS_USE_SYSTEM_FONT, state)
         _useSystemFont.postValue(state)
+    }
+    fun updateDisplayRisButton(context: Context, state: Boolean) {
+        val secureStorage = SecureStorage(context)
+        secureStorage.storeObject(SharedValues.SS_DISPLAY_RIS_BUTTON, state)
+        _displayRisButton.postValue(state)
     }
 
     suspend fun getUserSettings() {
