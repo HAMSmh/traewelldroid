@@ -116,6 +116,7 @@ private fun DisplayProviderSettings(
     val displayJourneyNumber by settingsViewModel.displayJourneyNumber.observeAsState(true)
     val displayDivergentStop by settingsViewModel.displayDivergentStop.observeAsState(true)
     val useSystemFont by settingsViewModel.useSystemFont.observeAsState(false)
+    val displayRisButton by settingsViewModel.displayRisButton.observeAsState(true)
 
     SettingsCard(
         title = R.string.settings_display,
@@ -181,6 +182,20 @@ private fun DisplayProviderSettings(
                 },
                 drawableId = R.drawable.ic_font,
                 stringId = R.string.use_system_font,
+                modifier = Modifier.fillMaxWidth()
+            )
+            SwitchWithIconAndText(
+                checked = displayRisButton,
+                onCheckedChange = {
+                    settingsViewModel.updateDisplayRisButton(context, it)
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            context.getString(R.string.changes_saved)
+                        )
+                    }
+                },
+                drawableId = R.drawable.ic_lock,
+                stringId = R.string.settings_display_ris_button,
                 modifier = Modifier.fillMaxWidth()
             )
         }
