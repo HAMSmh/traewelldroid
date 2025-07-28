@@ -65,6 +65,7 @@ import de.hbch.traewelling.ui.include.status.CheckInCardViewModel
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
 import java.time.format.DateTimeFormatter
+import androidx.core.net.toUri
 
 @Composable
 fun StatusDetail(
@@ -87,6 +88,7 @@ fun StatusDetail(
         viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner
     )
     val displayTagsInCard by settingsViewModel.displayTagsInCard.observeAsState(true)
+    val displayRisButton by settingsViewModel.displayRisButton.observeAsState(false)
     var displayMap by remember { mutableStateOf<Boolean?>(null) }
 
     LaunchedEffect(status) {
@@ -184,8 +186,60 @@ fun StatusDetail(
                     }
                 }
                 val dStatus = status
+                val journeyIdTag = dStatus?.tags?.firstOrNull { it.key?.key == "trwl:journey_id" }
+                val journeyId = journeyIdTag?.value
                 val journeyNumber = dStatus?.journey?.manualJourneyNumber ?: dStatus?.journey?.journeyNumber
-                if (dStatus != null && journeyNumber != null) {
+                if (dStatus != null && journeyId != null) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        ButtonWithIconAndText(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.open_with_bahnexpert),
+                            drawableId = R.drawable.ic_train,
+                            onClick = {
+                                val intent = CustomTabsIntent.Builder()
+                                    .setShowTitle(false)
+                                    .build()
+
+                                val uri = Uri.Builder()
+                                    .scheme("https")
+                                    .authority("bahn.expert")
+                                    .appendPath("details")
+                                    .appendPath("0")
+                                    .appendPath("j")
+                                    .appendPath(journeyId)
+                                    .build()
+
+                                intent.launchUrl(
+                                    context,
+                                    uri
+                                )
+                            }
+                        )
+                        if(displayRisButton) {
+                            ButtonWithIconAndText(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = stringResource(id = R.string.open_with_ris),
+                                drawableId = R.drawable.ic_lock,
+                                onClick = {
+                                    val intent = CustomTabsIntent.Builder()
+                                        .setShowTitle(false)
+                                        .build()
+
+                                    val uri =
+                                        "https://ris-info.bahn.de/#/train?fahrtId=$journeyId".toUri()
+
+                                    intent.launchUrl(
+                                        context,
+                                        uri
+                                    )
+                                }
+                            )
+                        }
+                    }
+                } else if (dStatus != null && journeyNumber != null) {
                     ButtonWithIconAndText(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.open_with_bahnexpert),
@@ -214,7 +268,6 @@ fun StatusDetail(
                                 context,
                                 uri
                             )
-
                         }
                     )
                 }
